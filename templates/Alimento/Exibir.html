@@ -1,0 +1,95 @@
+{% extends 'NutriPower.html' %} 
+
+{% block content %} 
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script>
+  function onchangeBusca(busca){
+    var nome = busca.value;
+    window.location.href = "/Alimento/BuscarAlimento/?nome="+nome;  
+    alert(nome)  
+  }
+</script>
+<form action="/Alimento/BuscarAlimento" method="GET">
+  <div style="width: 450px;" class="form-group ui-widget">
+    <label>Buscar Alimento:</label>
+    <input type="search" class="form-group input-sm" id="busca" aria-controls="example1" name="busca" onchange="onchangeBusca(this)">
+  </div>
+  
+</form>
+
+
+{% if alimento %}
+
+
+<div class="container-fluid">
+<div style="width: 550px; " class="box box-primary">
+
+  <form role="form">
+
+    <div class="box-body">
+      <div class="form-group">
+
+        <label>Dados do Alimento:</label>
+
+        <div style="width: 450px;" class="form-group">
+          <label>Nome</label>
+          <output type="text" class="form-control" id="nome">{{alimento.nome}}</output>
+        </div>
+
+        <div style="width: 150px" class="form-group">
+          <label>Porção 100g</label>
+        </div>
+
+        <div style="width: 150px" class="form-group">
+          <label>Kcal</label>
+          <output type="text" class="form-control" id="Kcal">{{'%0.2f'| format(alimento.Kcal|float)}}</output>
+        </div>
+
+        <div style="width: 150px;" class="form-group">
+          <label>Proteinas (g)</label>
+          <output type="text" class="form-control" id="proteinas">{{'%0.2f'| format(alimento.proteina|float)}}</output>
+        </div>
+
+        <div style="width: 450px;" class="form-group">
+          <label>Carboidratos (g)</label>
+          <output type="text" class="form-control" id="carboidratos">{{'%0.2f'| format(alimento.carboidrato|float)}}</output>
+        </div>
+
+        <div style="width: 450px;" class="form-group">
+          <label>Gorduras (g)</label>
+          <output type="text" class="form-control" id="gorduras">{{'%0.2f'| format(alimento.lipidio|float)}}</output>
+        </div>
+
+
+
+
+      </div>
+    </div>
+  </form>
+ 
+</div>
+</div>
+{% include '/Alimento/grafico.html' %}
+{% endif %}
+
+
+<div style="margin-top: 300px">
+  <button type="submit" class="btn btn-default">
+    <a href="/" style="color: black">Cancelar</a>
+  </button>
+  <button type="submit" class="btn btn-info pull-right">Salvar</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  $( function() {
+    var alimentos = JSON.parse('{{alimentos|safe}}');
+    $( "#busca" ).autocomplete({
+      source: alimentos
+    });
+  } );
+  </script>
+{% endblock %}
+

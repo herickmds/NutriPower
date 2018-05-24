@@ -1,0 +1,126 @@
+{% extends 'NutriPower.html' %} {% block content %}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script>
+    function onchangeBusca(busca) {
+        var nome = busca.value;
+        window.location.href = "/Paciente/ExibirPacienteAlterar/?nome=" + nome;
+        alert(nome)
+    }
+</script>
+<form action="/Paciente/BuscarPacienteAlterar" method="GET">
+    <div style="width: 450px;" class="form-group ui-widget">
+        <label>Buscar Paciente:</label>
+        <input type="search" class="form-group input-sm" id="busca" aria-controls="example1" name="busca" onchange="onchangeBusca(this)">
+    </div>
+
+</form>
+
+
+{% if paciente %}
+
+
+<div style="width: 550px; " class="box box-primary">
+
+
+    <form role="form" method="POST" action="/Paciente/AlterarPaciente/" enctype="multipart/form-data">
+
+        <div class="box-body">
+            <div class="form-group">
+
+
+                <label>Alterar dados do paciente:</label>
+
+                <div style="width: 450px;" class="form-group">
+                    <label>Nome</label>
+                    <input value="{{form.nome}}" type="text" class="form-control" name="nome">{{form.nome}}
+                </div>
+
+                <div style="width: 150px" class="form-group">
+                    <label>Idade</label>
+                    <input value="{{form.idade}}" type="text" class="form-control" name="idade">{{form.idade}}
+                </div>
+
+                <div style="width: 150px;" class="form-group">
+                    <label>Sexo</label>
+                    <select name="sexo" value="{{form.sexo}}" class="form-control">{{form.sexo}}
+                        <option id="masculino">Masculino</option>
+                        <option id="feminino">Feminino</option>
+                    </select>
+                </div>
+
+                <div style="width: 450px;" class="form-group">
+                    <label>Altura(em metros)</label>
+                    <input name="altura" value="{{form.altura}}" style="width: 150px" 
+                    type="text" class="form-control">{{form.altura}}
+                </div>
+
+                <div style="width: 450px;" class="form-group">
+                    <label>Peso(em Kg)</label>
+                    <input name="peso" value="{{form.peso}}" type="text" class="form-control">{{form.peso}}
+                </div>
+
+                <div style="width: 450px;" class="form-group">
+                    <label>Email</label>
+                    <input name="email" value="{{form.email}}" type="text" class="form-control">{{form.email}}
+                </div>
+
+                <div style="width: 450px;" class="form-group">
+                    <label>Telefone</label>
+                    <input name="telefone" value="{{form.telefone}}" 
+                    type="text" class="form-control">{{form.telefone}}
+                </div>
+
+
+                <div style="width: 450px;" class="form-group">
+                    <label>CPF</label>
+                    <input name="cpf" value="{{form.cpf}}" type="text" class="form-control">{{form.cpf}}
+                </div>
+
+
+                <div style="width: 450px;" class="form-group">
+                    <label>Nível de Atividade Física</label>
+                    <select name="atividade" value="{{form.atividade}}" class="form-control">{{form.atividade}}
+                        <option>Sedentário:(pouco ou nenhum exercício diário)</option>
+                        <option>Levemente Ativo:(exercício leve 1 a 3 dias na semana)</option>
+                        <option>Moderadamente Ativo:(exercício moderado 3 a 5 dias na semana)</option>
+                        <option>Bastante Ativo:(exercício pesado 6 a 7 dias na semana)</option>
+                        <option>Muito Ativo:(exercício pesado todos os dias da semana ou 2 vezes ao dia)</option>
+                    </select>
+                </div>
+
+
+            </div>
+        </div>
+
+        {% if msg %}
+        <div class="alert alert-info">
+            <strong>Info!</strong> {{msg}}.
+        </div>
+        {% endif %}
+    </form>
+
+    <form action="/Paciente/AterarPaciente/" method="POST">
+        <button type="submit" class="btn btn-danger pull-right">Alterar</button>
+    </form>
+
+</div>
+{% endif %}
+
+
+<div style="margin-top: 300px">
+    <button type="submit" class="btn btn-default">
+        <a href="/" style="color: black">Cancelar</a>
+    </button>
+
+</div>
+{% endblock %} {% block scripts %}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(function () {
+        var pacientes = JSON.parse('{{paciente|safe}}');
+        $("#busca").autocomplete({
+            source: pacientes
+        });
+    });
+</script> {% endblock %}

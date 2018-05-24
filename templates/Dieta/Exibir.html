@@ -1,0 +1,93 @@
+{% extends 'NutriPower.html' %}
+{% block content %}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script>
+  function onchangeBusca(busca){
+    var nome = busca.value;
+    window.location.href = "/Dieta/BuscarDieta/?nome="+nome;  
+    alert(nome)  
+  }
+</script>
+<form action="/Dieta/BuscarDieta/" method="GET">
+  <div style="width: 450px;" class="form-group ui-widget">
+    <label>Buscar Dieta:</label>
+    <input type="search" class="form-group input-sm" id="busca" aria-controls="example1" name="busca" onchange="onchangeBusca(this)">
+  </div>
+  
+</form>
+
+
+{% if dieta %}
+
+<div class="box box-primary">
+
+  <form role="form" method="POST" action="/Dieta/RemoverDieta/" enctype="multipart/form-data">
+    <div class="box-body">
+      <div class="form-group">
+ 
+        <div style="width: 450px;" class="form-group">
+          <label>Nome Dieta</label>
+          <input value="{{form.nome}}" type="text" class="form-control" name="nome">{{dieta.nome_dieta}}
+        </div>
+ 
+        <div style="width: 150px" class="form-group">
+          <label>Objetivo</label>
+          <input value="{{form.objetivo}}" type="text" class="form-control" name="objetivo">{{dieta.objetivo}}
+        </div>
+
+        <div style="width: 150px" class="form-group">
+          <label>Refeições</label>
+          {% for d in lista %}
+          <input value="{{form.refeicao}}" type="text" class="form-control" name="refeicao">
+          {{% d.nome_refeicao %}}
+          {% endfor %}
+        </div>
+ 
+        <div style="width: 150px;" class="form-group">
+          <label>Calorias</label>
+          <input name="calorias" value="{{form.calorias}}" class="form-control">{{dieta.calorias}}
+        </div>
+ 
+        <div style="width: 450px;" class="form-group">
+          <label>Proteinas</label>
+          <input name="proteina" value="{{form.proteina}}" class="form-control">{{dieta.proteinas}}
+        </div>
+      </div>
+ 
+      <div style="width: 450px;" class="form-group">
+        <label>Carboidratos</label>
+        <input name="carboidrato" value="{{form.carboidrato}}" class="form-control">{{dieta.carboidratos}}
+      </div>
+ 
+      <div style="width: 450px;" class="form-group">
+        <label>Gorduras</label>
+        <input name="gordura" value="{{form.gordura}}" class="form-control">{{dieta.gorduras}}
+      </div>
+    </div>
+    {% endif %}
+ </div>
+ 
+ <button type="submit" class="btn btn-info pull-right">Remover</button>
+ 
+ </form>
+ </div>
+ <button type="submit" class="btn btn-default">
+  <a href="../NutriPower.html" style="color: black">Cancelar</a>
+ </button>
+ 
+
+ 
+ {% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  $( function() {
+    var dietas = JSON.parse('{{dietas|safe}}');
+    $( "#busca" ).autocomplete({
+      source: dietas
+    });
+  } );
+  </script>
+{% endblock %}
