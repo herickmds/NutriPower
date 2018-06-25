@@ -1,6 +1,6 @@
 from jinja2 import TemplateNotFound
 from flask import Flask, render_template, request, url_for, redirect, Blueprint, abort
-from NutripowerMysql import Alimento, db, Paciente, Refeicao, Dieta, Alimento_Refeicao, Refeicoes_Dieta
+from NutripowerMysql import Alimento, db, Paciente, Refeicao, Dieta, Alimentos_Refeicao, Refeicoes_Dieta
 import json
 from playhouse.shortcuts import model_to_dict
 
@@ -9,194 +9,171 @@ refeicao_pages = Blueprint('refeicao_pages', __name__,
 
 app = refeicao_pages
 
-lista_alimentos_refeicao = []
-
+lista_alimentos = []
 ##Refeicao##
 @app.route('/CadastroRefeicao/', methods=["GET", "POST"])
 def cadastraRefeicao():
     if request.method=="POST":
         try:
-            ar = Alimento_Refeicao()
-            if ar.id_alimentos_refeicao == None:
-                ar.id_alimentos_refeicao = 1
-            else:
-                ar.id_alimentos_refeicao += ar.id_alimentos_refeicao
-            for a in lista_alimentos_refeicao:
-                ar.id_alimento = a.id_alimento
-            ar.save()
-
             r = Refeicao()
-            r.nome_refeicao = request.form["nome"]
-            r.horario_refeicao = request.form["horario"]
-            r.id_alimentos_refeicao = ar.id_alimentos_refeicao
-            for a in lista_alimentos_refeicao:
-                r.proteinas += "{0:.2f}".format(float(a.proteina))
-                r.carboidratos += "{0:.2f}".format(float(a.carboidrato))
-                r.gorduras += "{0:.2f}".format(float(a.lipidio))
-            
+            nome_refeicao = request.form["nome"]
+            r.nome_refeicao = nome_refeicao
+            horario_refeicao = request.form["horario"]
+            r.horario_refeicao = horario_refeicao
             r.save()
-            return render_template("/Refeicao/Cadastro.html", form={})
-            lista_alimentos_refeicao[:] = []
+            return redirect("/Refeicao/CadastroRefeicao/%d/" % r.id_refeicao)
+        
+        except Exception as e:
+            return e[0]
+    else:
+	    return render_template("/Refeicao/Cadastro.html",form={},msg='cad')
+
+
+@app.route('/CadastroRefeicao/<id_refeicao>/', methods=["GET", "POST"])
+def adicionaAlimentoRefeicao(id_refeicao):
+    alimentos=Alimento.autocomplete()
+    form=request.form.to_dict()
+    refeicao = Refeicao.get_by_id(int(id_refeicao))
+    a = request.args.get('busca')
+    if a:
+        try:
+            alimento = Alimento.select().where(Alimento.nome == a).get()
+            if alimento is not None:
+                porcao = request.args.get('porcao')
+                ar = Alimentos_Refeicao()
+                ar.id_refeicao = refeicao.id_refeicao
+                ar.id_alimento =  alimento.id_alimento
+                ar.porcao = porcao
+                ar.save()
+                return redirect('/Refeicao/CadastroRefeicao/%s/'% id_refeicao)
+            else:
+                msg="Alimento nao encontrado!"
         
         except Exception as e:
             return e
     else:
-	        return render_template("/Refeicao/Cadastro.html", form={}, refeicao=r, lista=lista_alimentos_refeicao)
+	    return render_template("/Refeicao/CadastrarAlterar.html", Ref=Refeicao, **locals())
 
-@app.route('/BuscarAlimentoRefeicao/', methods=["GET", "POST"])
-def BuscarAlimentoRefeicao():
-    try:   
-        nome = request.args.get('busca')
-        alimento = Alimento.select().where(Alimento.nome == nome).get()
-        return redirect("/Refeicao/SelecionarAlimentoRefeicao/%d/" % alimento.id_alimento)
-    except Exception as e:
-        return u""+ str(e)
 
-@app.route('/SelecionarAlimentoRefeicao/<id>/')
-def AlimentoRefeicaoBuscado(id):
+@app.route('/ListarRefeicoes/')
+def listar():
     try:
-        result = Alimento.select(Alimento.nome)
-        alimentos = [model_to_dict(ali)["nome"] for ali in result]
-        alimento = Alimento.select().where(Alimento.id_alimento == id).get()
-        lista_alimentos_refeicao.append(alimento)
-        return render_template('/Refeicao/Cadastro.html', alimento=alimento, alimentos=json.dumps(alimentos))
-    except Exception as e:
-        return u"" +str(e)
-
-
-@app.route('/ListarRefeicoes/', methods=["GET", "POST"])
-def ListarRefeicao():
-    try:
-        pagina = request.args.get("pag")
-        lista = listarRefeicoes(pagina=pagina)
-        return render_template('/Refeicao/Listar.html', lista=lista)   
-    except Exception, e:
-        return u""+ str(e)
-
-def listarRefeicoes(pagina=1):
-    p = 1
-    try:
-        if pagina == None:
-            pagina = p
-            lista = Refeicao.select().order_by(Refeicao.nome_refeicao).paginate(pagina, 10)
-            return lista
+        pagina = request.args.get("page")
+        tamanho = [t for t in Refeicao.select().order_by(Refeicao.nome_refeicao)]
+        n = len(tamanho)
+        if (n%10) > 1:
+            paginacoes = ((n/10) + 1)
         else:
-            lista = Refeicao.select().order_by(Refeicao.nome_refeicao).paginate(pagina, 10)
-            return lista
+            paginacoes = (n/10)
+
+        if(pagina == None):
+            pagina = 1
+        if pagina == 0:
+            pagina = 1
+            lista = Refeicao.listarRefeicao(pagina=pagina)
+            return render_template('/Refeicao/Listar.html', paginacoes=paginacoes, lista=lista, page=int(pagina))
+        lista = Refeicao.listarRefeicao(pagina=int(pagina))
+        return render_template('/Refeicao/Listar.html', paginacoes=paginacoes, lista=lista, page=int(pagina))
     except Exception, e:
-        return e
-   
+        return u""+ str(e)
+
+
+
 @app.route('/ExibirRefeicao/', methods=["GET", "POST"])
 def BuscaListaRefeicoes():
-    result = Refeicao.select(Refeicao.nome_refeicao)
-    refeicao = [model_to_dict(p)["nome"] for p in result]
-    return render_template('/Refeicao/Exibir.html', paciente=json.dumps(refeicao))
+    refeicoes = Refeicao.autocomplete()
+    return render_template('/Refeicao/Exibir.html', **locals())
 
 @app.route('/BuscarRefeicao/', methods=["GET"])
 def buscarRefeicao():
-    try:   
-        nome = request.args.get('busca')
-        refeicao = Refeicao.select().where(Refeicao.nome_refeicao == nome).get()
-        return redirect("/Refeicao/ExibirRefeicao/%d/" % refeicao.id_refeicao)
-    except Exception as e:
-        return u""+ str(e)
+    nome = request.args.get('busca')
+    refeicao = Refeicao.buscar(nome)
+    return redirect("/Refeicao/ExibirRefeicao/%d/" % refeicao)
 
-@app.route('/Refeicao/ExibirRefeicao/<id>/')
+@app.route('/ExibirRefeicao/<id>/')
 def exibirRefeicaoBuscado(id):
+    form = {}
+    alimentos=Alimento.autocomplete()
+    refeicoes = Refeicao.autocomplete()
     try:
-        result = Refeicao.select(Refeicao.nome_refeicao)
-        refeicoes = [model_to_dict(r)["nome"] for r in result]
         refeicao = Refeicao.select().where(Refeicao.id_refeicao == id).get()
-        lista = Alimento_Refeicao.select().where(Alimento_Refeicao.id_alimentos_refeicao == refeicao.id_alimentos_refeicao)
-        lista_alimentos = []
-        for a in lista:
-            lista_alimentos = Alimento.select().where(Alimento.id_alimento == a.id_alimento)
-
-        return render_template('/Refeicao/Exibir.html', refeicao=refeicao, lista=lista_alimentos, refeicoes=json.dumps(refeicoes))
+        return render_template('/Refeicao/CadastrarAlterar.html', **locals())
     except Exception as e:
         return u"" +str(e)
 
 
-@app.route('/Refeicao/BuscarAlimentoAlterar', methods=["GET", "POST"])
-def BuscarAlimentoAlterar():
-    try:   
-        nome = request.args.get('busca')
-        alimento = Alimento.select().where(Alimento.nome== nome).get()
-        task = "/Seleciona/NovoAlimento/"
-        if task != None:
-            return render_template('/Refeicao/Alterar.html', task=task)
-
-        return redirect("/Refeicao/ExibirAlimentoAlterar/%d/" % alimento.id_alimento) 
-        
-    except Exception as e:
-        return u""+ str(e)
-
-
-@app.route('/Refeicao/ExibirAlimentoAlterar/<id>/')
-def ExibirAlimentoAlterar(id, task):
+@app.route('/AlterarRefeicao/')
+def AlterarRefeicao():
     try:
-        result = Refeicao.select(Refeicao.nome_refeicao)
-        refeicoes = [model_to_dict(r)["nome"] for r in result]
-        return render_template('/Refeicao/Alterar.html', refeicoes=json.dumps(refeicoes))
+        refeicoes = Refeicao.autocomplete()
+        nome = request.args.get('busca')
+        if nome:
+            refeicao = Refeicao.buscar(nome)
+            return redirect("/Refeicao/ExibirRefeicaoAlterar/%d/" % refeicao)
+        else:
+            return render_template('/Refeicao/BuscaRefeicaoAlterar.html', **locals())
     except Exception as e:
         return u"" +str(e)
 
-lista_alimentos_refeicao2 = []
 
-@app.route('/BuscarAlimentoRefeicaoAlterar', methods=["GET", "POST"])
-def BuscarAlimentoRefeicaoAlterar():
-    try:   
-        nome = request.args.get('busca')
-        alimento = Alimento.select().where(Alimento.nome== nome).get()
-        lista_alimentos_refeicao2.append(alimento)
+@app.route('/ExibirRefeicaoAlterar/<id>/', methods=["GET", "POST"])
+def alterar(id):
+    try:
+        form = {}
+        alimentos=Alimento.autocomplete()
+        refeicoes = Refeicao.autocomplete()
+        refeicao = Refeicao.select().where(Refeicao.id_refeicao == id).get()
+        ar = Alimentos_Refeicao.select().where(Alimentos_Refeicao.id_refeicao == id)
+        return render_template('/Refeicao/CadastrarAlterar.html', **locals())
     except Exception as e:
-        return u""+ str(e)
-
-@app.route('/AlterarRefeicao/<id>/')
-def AlterarRefeicao(id):
-    if request.method == 'POST':
-        try:
-            ar = Alimento_Refeicao()
-            if ar.id_alimentos_refeicao == None:
-                ar.id_alimentos_refeicao = 1
-            else:
-                ar.id_alimentos_refeicao += ar.id_alimentos_refeicao
-            for a in lista_alimentos_refeicao:
-                ar.id_alimento = a.id_alimento
-            ar.save()
-
-            result = Refeicao.select(Refeicao.nome_refeicao)
-            refeicoes = [model_to_dict(x)["nome_refeicao"] for x in result]
-            r = Refeicao.select().where(Refeicao.id_refeicao == id).get()
-            r.nome_refeicao = request.form["nome"]
-            r.horario_refeicao = request.form["horario"]
-            r.id_alimentos_refeicao = ar.id_alimentos_refeicao
-            for a in lista_alimentos_refeicao2:
-                r.proteinas += "{0:.2f}".format(float(a.proteina))
-                r.carboidratos += "{0:.2f}".format(float(a.carboidrato))
-                r.gorduras += "{0:.2f}".format(float(a.lipidio))
-            
-            r.save()
-            msg = "Refeicao alterada com sucesso!"
-            return render_template('/Refeicao/Alterar.html', msg=msg ,refeicao=r, refeicoes=json.dumps(refeicoes))
-            lista_alimentos_refeicao2[:] = [] 
-        except Exception as e:
-            return render_template("/Refeicao/Alterar.html", msg = u"" +str(e), form = request.form.to_dict())
-    else:
-        p = Refeicao.get(id)
-        return render_template("/Refeicao/Alterar.html", form=model_to_dict(p))
+        return u"" +str(e)
 
 
-@app.route('/RemoverRefeicao/', methods=["GET", "POST"])
-def RemoverRefeicao():
-    if request.method == 'POST':
-        try:
-            nome_refeicao = request.form["nome"]
-            r = Refeicao.delete().where(Refeicao.nome_refeicao == nome_refeicao).get()
-            Alimento_Refeicao.delete().where(Alimento_Refeicao.id_alimentos_refeicao == r.id_alimento_refeicao)
-            msg = "Refeicao deletada com sucesso!"
-            return render_template("/Refeicao/Exibir.html", msg=msg)
-        except Exception as e:
-            return e
+@app.route('/AlterarRefeicao/<id_refeicao>/<id_alimento>/', methods=["GET", "POST"])
+def alteraAlimentoRefeicao(id_refeicao,id_alimento):
+    nome = request.args.get('busca')
+    id_Ali = Alimento.buscar(nome)
+    try:
+        alimentos=Alimento.autocomplete()
+        ar = Alimentos_Refeicao.select().where(Alimentos_Refeicao.id_refeicao == id_refeicao and Alimentos_Refeicao.id_alimento == id_alimento)
+        ar.id_alimento = id_Ali
+        ar.porcao = request.form['porcao']
+        ar.save()
+        r = Refeicao.get_by_id(id_refeicao)
+        r.nome_refeicao = request.form['nome']
+        r.horario_refeicao = request.form['horario']
+        r.save()
+        form=request.form.to_dict()
+        return render_template('/Refeicao/CadastrarAlterar.html', **locals())
+    except Exception as e:
+        return u"" +str(e)
+
+
+@app.route('/RemoverRefeicao/<id>/', methods=["GET", "POST"])
+def RemoverRefeicao(id):
+    refeicoes = Refeicao.autocomplete()
+    try:
+        id_ref = int(id)
+        Refeicao.delete_by_id(id_ref)
+        ar = Alimentos_Refeicao.select().where(Alimentos_Refeicao.id_refeicao == int(id_ref) and Alimentos_Refeicao.id_alimento == id).get()
+        ar.delete_instance()
+        
+        msg = "Refeicao deletada com sucesso!"
+        return redirect('/Refeicao/ListarRefeicoes/')
+    except Exception as e: 
+        return u"" +str(e)
+
+
+@app.route('/RemoverAlimentoRefeicao/<id_refeicao>/<id>/', methods=["GET", "POST"])
+def RemoverAlimentoRefeicao(id_refeicao,id):
+    refeicoes = Refeicao.autocomplete()
+    try:
+        ar = Alimentos_Refeicao.select().where(Alimentos_Refeicao.id_refeicao == int(id_refeicao) and Alimentos_Refeicao.id_alimento == id).get()
+        ar.delete_instance()
+        msg = "Alimento deletado da refeicao com sucesso!"
+        return redirect('/Refeicao/ExibirRefeicaoAlterar/%d/' % int(id_refeicao))
+    except Exception as e:
+            return u"" +str(e)
+
 
 ##Refeicao##
