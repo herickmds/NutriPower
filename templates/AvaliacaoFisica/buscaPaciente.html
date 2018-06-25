@@ -1,31 +1,28 @@
 {% extends 'NutriPower.html' %} {% block content %}
 
+
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script>
-  function onchangeBusca(busca) {
-    var nome = busca.value;
-    window.location.href = "/Refeicao/BuscarRefeicao/?busca=" + nome;
-    alert(nome)
-  }
-</script> {% if msg_error %}
+
+
+{% if msg_error %}
 <pre style="color:red">{{ msg_error}}</pre> {% endif %}
 
-<form action="/Refeicao/BuscarRefeicao/" method="GET">
+<form action="/AvaliacaoFisica/CadastroAvaliacao/" method="POST">
   <div style="width: 450px;" class="form-group ui-widget">
-    <label>Buscar Refeição:</label>
+    <label>Buscar Paciente:</label>
     <input type="search" class="form-group input-sm" id="busca" aria-controls="example1" name="busca" onchange="onchangeBusca(this)">
   </div>
-  <button type="submit" class="btn btn-primary">Buscar</button>
+  <button type="submit" class="btn btn-info">Buscar</button>
 </form>
+{% endblock %}
 
-
-{% endblock %} {% block scripts %}
+{% block scripts %}
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
   $(function () {
-    var refeicoes = JSON.parse('{{refeicoes|safe}}');
+    var pacientes = JSON.parse('{{pacientes|safe}}');
     $("#busca").autocomplete({
-      source: refeicoes
+      source: pacientes
     });
   });
 </script> {% endblock %}

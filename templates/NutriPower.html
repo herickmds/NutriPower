@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>NutriPower</title>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  
   <link rel="stylesheet" href="/static/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="/static/bower_components/font-awesome/css/font-awesome.min.css">
@@ -89,18 +90,18 @@
               <!-- Menu Toggle Button -->
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <!-- The user image in the navbar-->
-                <img src="/static/dist/img/avatar5.png" class="user-image" alt="Imagem de Usuário">
+                <img src="{{session['foto']}}" class="user-image" alt="Imagem de Usuário">
                 <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                <span class="hidden-xs">Usuário</span>
+                <span class="hidden-xs">{{data}}</span>
               </a>
               <ul class="dropdown-menu">
 
                 <!-- The user image in the menu -->
                 <li class="user-header">
-                  <img src="/static/dist/img/avatar5.png" class="img-circle" alt="Imagem de Usuário">
+                  <img src="{{session['foto']}}" class="img-circle" alt="Imagem de Usuário">
 
                   <p>
-                    Usuário
+                    {{session['username']}}
                     <small>Membro desde Março. 2018</small>
                   </p>
                 </li>
@@ -109,10 +110,10 @@
             <!-- Menu Footer-->
             <li class="user-footer">
               <div class="pull-left">
-                <a href="#" class="btn btn-default btn-flat">Perfil</a>
+                <a href="/Login/Perfil/" class="btn btn-default btn-flat">Perfil</a>
               </div>
               <div class="pull-right">
-                <a href="#" class="btn btn-default btn-flat">Sair</a>
+                <a href="/Login/logout/" class="btn btn-default btn-flat">Sair</a>
               </div>
             </li>
             </ul>
@@ -132,10 +133,10 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel">
           <div class="pull-left image">
-            <img src="/static/dist/img/avatar5.png" class="img-circle" alt="User Image">
+            <img src="{{session['foto']}}" class="img-circle" alt="User Image">
           </div>
           <div class="pull-left info">
-            <p>Usuário</p>
+            <p>{{session['username']}}</p>
             <!-- Status -->
             <a href="#">
               <i class="fa fa-circle text-success"></i> Online</a>
@@ -209,9 +210,6 @@
               <li>
                 <a href="/Refeicao/ListarRefeicoes/">Listar</a>
               </li>
-              <li>
-                <a href="/Refeicao/AlterarRefeicao/">Alterar</a>
-              </li>
             </ul>
           </li>
 
@@ -233,13 +231,43 @@
               <li>
                 <a href="/Dieta/ListarDietas/">Listar</a>
               </li>
-              <li>
-                <a href="/Dieta/AlterarDieta/">Alterar</a>
-              </li>
             </ul>
           </li>
 
 
+          <li class="treeview">
+              <a href="#">
+                <i class="fa fa-area-chart"></i>
+                <span>Avaliação Física</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li>
+                  <a href="/AvaliacaoFisica/CadastroAvaliacao/">Cadastrar</a>
+                </li>
+                <li>
+                  <a href="/AvaliacaoFisica/ListarAvaliacao/">Listar</a>
+                </li>
+              </ul>
+            </li>
+  
+            <li class="treeview">
+                <a href="#">
+                  <i class="fa fa fa-archive"></i>
+                  <span>Consulta</span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu">
+                  <li>
+                    <a href="/Consulta/ListarConsulta/">Listar</a>
+                  </li>
+                </ul>
+              </li>
+    
           <!-- /.sidebar-menu -->
       </section>
       <!-- /.sidebar -->
@@ -250,13 +278,7 @@
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
-      <section class="content-header">
-        <h1>
-          Cabeçalho da página
-          <small>Descrição opcional</small>
-        </h1>
-
-      </section>
+  
 
       <!-- Main content -->
       <section class="content container-fluid">

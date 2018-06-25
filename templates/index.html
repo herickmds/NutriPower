@@ -1,9 +1,11 @@
+{% if session['logged_in'] == False%}
+{% extends "/login/login.html" %}
+{% endif %}
+{% if session['logged_in'] %}
 {% extends 'NutriPower.html' %} 
+{% endif %}
 
 {% block content %} 
 
-<p>Bem Vindo!</p>
 
 {% endblock %}
-
-

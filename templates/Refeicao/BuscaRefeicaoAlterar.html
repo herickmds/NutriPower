@@ -1,0 +1,42 @@
+{% extends 'NutriPower.html' %} {% block content %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<script>
+    function onchangeBusca(busca) {
+        var nome = busca.value;
+        window.location.href = "/Refeicao/AlterarRefeicao/?busca=" + nome;
+        alert(nome)
+    }
+</script>
+
+<link rel="stylesheet" href="/static/css/tabela.css">
+<div class="box box-primary">
+
+    <div class="box-body">
+        <div class="form-group">
+
+            <form action="/Refeicao/AlterarRefeicao/" method="GET">
+                <div style="width: 450px;" class="form-group ui-widget">
+                    <label>Buscar Refeição:</label>
+                    <input type="search" class="form-group input-sm" id="busca" aria-controls="example1" name="busca" onchange="onchangeBusca(this)">
+                </div>
+            </form>
+      </div>
+
+    </div>
+
+</div>
+
+
+
+{% endblock %} {% block scripts %}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(function () {
+        var refeicoes = JSON.parse('{{refeicoes|safe}}');
+        $("#busca").autocomplete({
+            source: refeicoes
+        });
+    });
+</script>
+ {% endblock %}

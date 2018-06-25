@@ -1,0 +1,94 @@
+{% extends 'NutriPower.html' %} {% block content %}
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script>
+  function onchangeBusca(busca) {
+    var nome = busca.value;
+    window.location.href = "/Consulta/CadastroConsulta/{{c.id_avaliacao.id_avaliacao}}/?busca=" + nome;
+    alert(nome)
+  }
+</script>
+
+<div class="box box-primary">
+
+  <form role="form" method="POST" action="/Consulta/CadastroConsulta/{{c.id_avaliacao.id_avaliacao}}/">
+    <div class="box-body">
+      <div class="form-group">
+
+        <div style="width: 450px;" class="form-group">
+          <label>Nutricionista</label>
+          <output type="text" class="form-control" name="nutricionista">{{c.id_nutricionista.nome}}</output>
+        </div>
+
+        <div style="width: 150px" class="form-group">
+          <label>Objetivo</label>
+          <output type="text" class="form-control" name="objetivo">{{c.objetivo}}</output>
+        </div>
+
+        <div style="width: 450px;" class="form-group">
+          <label>Paciente</label>
+          <output type="text" class="form-control" name="paciente">{{c.id_paciente.nome}}</output>
+        </div>
+
+        <div style="width: 450px;" class="form-group">
+          <label>Data Consulta</label>
+          <output type="text" class="form-control" name="data">{{c.data}}</output>
+        </div>
+
+        <div style="width: 450px;" class="form-group">
+          <label>ID Avaliação Física</label>
+          <output type="text" class="form-control" name="id_avaliacao">{{c.id_avaliacao.id_avaliacao}}</output>
+        </div>
+        {% if dieta %}
+        <div style="width: 450px;" class="form-group">
+          <label>Dieta</label>
+          <output type="text" class="form-control" name="dieta">{{c.id_dieta.nome_dieta}}</output>
+          {% endif %} {% if msg != 'ok' %}
+          <form action="/Consulta/CadastroConsulta/{{c.id_avaliacao}}" method="GET">
+            <div style="width: 450px;" class="form-group ui-widget">
+              <label>Buscar Dieta:</label>
+              <input type="search" class="form-group input-sm" id="busca" aria-controls="example1" name="busca" onchange="onchangeBusca(this)">
+            </div>
+            <button type="submit" class="btn btn-info">Buscar</button>
+          </form>
+          {% endif %}
+        </div>
+        
+        {% if exibir == 'ok' %}
+        <div style="width: 450px;" class="form-group">
+            <label>Próxima Consulta Marcada</label>
+            <output type="text" class="form-control" name="proxima_consulta">{{c.proxima_consulta}}</output>
+        </div>  
+        {% endif %}
+
+        {% if salvar != 'ok' %}
+        <div style="width: 450px;" class="form-group">
+          <label>Próxima Consulta</label>
+          <input value="{{form.proxima_consulta}}" type="text" class="form-control" name="proxima_consulta">
+        </div>
+        <button type="submit" class="btn btn-info">Salvar</button>
+        {% endif %}
+
+     
+
+
+        {% if salvar == 'ok' %}
+        <div style="width: 450px;" class="form-group">
+            <label>Próxima Consulta</label>
+            <output type="text" class="form-control" name="proxima_consulta">{{c.proxima_consulta}}</output>
+        </div>  
+        {% endif %}
+  </form>
+
+  </div>
+
+  {% endblock %} {% block scripts %}
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    $(function () {
+      var dietas = JSON.parse('{{dietas|safe}}');
+      $("#busca").autocomplete({
+        source: dietas
+      });
+    });
+  </script> {% endblock %}

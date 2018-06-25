@@ -1,0 +1,134 @@
+{% extends 'NutriPower.html' %} {% block content %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="/static/validaDados.js"></script>
+<script>
+    function onchangeBusca(busca) {
+        var nome = busca.value;
+        window.location.href = "/Dieta/AlterarDieta/{{dieta.id_dieta}}/?nome=" + nome;
+        alert(nome)
+    }
+</script>
+
+<div class="box box-primary">
+
+    <div class="box-body">
+        <div class="form-group">
+
+
+            <div style="width: 450px;" class="form-group">
+                <label>Nome dieta</label>
+                <input value="{{dieta.nome_dieta}}" type="text" readonly class="form-control" name="nome">
+            </div>
+
+            <div style="width: 150px" class="form-group">
+                <label>Objetivo</label>
+                <input value="{{dieta.objetivo}}" type="text" readonly class="form-control" name="objetivo">
+            </div>
+        </div>
+        
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Adicionar Refeição</button>
+
+
+        <div class="box-body">
+            <div class="form-group">
+
+
+
+                <table class="table table-bordered table-striped dataTable" role="grid">
+                    <thead>
+                        <tr role="row">
+                            <th class="sorting_asc" tabindex="0" aria-controls="alimentos" rowspan="1" colspan="1" aria-sort="ascending" style="width: 100px;">Nome Refeicao </th>
+                            <th class="sorting" tabindex="0" aria-controls="alimentos" rowspan="1" colspan="1" style="width: 100px;">Proteínas (g) </th>
+                            <th class="sorting" tabindex="0" aria-controls="alimentos" rowspan="1" colspan="1" style="width: 100px;">Gorduras (g) </th>
+                            <th class="sorting" tabindex="0" aria-controls="alimentos" rowspan="1" colspan="1" style="width: 100px;">Carboidratos (g) </th>
+                            <th class="sorting" tabindex="0" aria-controls="alimentos" rowspan="1" colspan="1" style="width: 100px;">Calorias (Kcal) </th>
+                            <th class="sorting" tabindex="0" aria-controls="alimentos" rowspan="1" colspan="1" style="width: 100px;">Colesterol (mg) </th>
+                            <th class="sorting_asc" tabindex="0" aria-controls="alimentos" rowspan="1" colspan="1" aria-sort="ascending" style="width: 100px;">Deletar </th>
+                        </tr>
+                    </thead>
+                    <tbody id="alimentos">
+                        {% for rd in dieta.refeicoes_dieta %}
+
+                        <tr role="row" class="odd" name="linha"></tr>
+                        <td class="sorting_1" name="nomeAlimento">{{rd.nome()}}</td>
+                        <td name="proteina">{{'%0.2f'| format(rd.proteina())|float}}</td>
+                        <td name="gordura">{{'%0.2f'| format(rd.gordura())|float}}</td>
+                        <td name="carboidrato">{{'%0.2f'| format(rd.carboidrato())|float}}</td>
+                        <td name="caloria">{{'%0.2f'| format(rd.caloria())|float}}</td>
+                        <td name="colesterol">{{'%0.2f'| format(rd.colesterol())|float}}</td>
+                      
+                        <td class="sorting_1">
+                            <a href="/Dieta/RemoverRefeicaoDieta/{{dieta.id_dieta}}/{{rd.id_refeicao.id_refeicao}}/" class="btn btn-danger" role="button">Deletar</a>
+                        </td>
+                        </tr>
+
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th rowspan="1" colspan="1">Nome Refeicao </th>
+                            <th rowspan="1" colspan="1">{{'%0.2f'| format(dieta.proteina())}} </th>
+                            <th rowspan="1" colspan="1">{{'%0.2f'| format(dieta.gordura())}} </th>
+                            <th rowspan="1" colspan="1">{{'%0.2f'| format(dieta.carboidrato())}}</th>
+                            <th rowspan="1" colspan="1">{{'%0.2f'| format(dieta.caloria())}}</th>
+                            <th rowspan="1" colspan="1">{{'%0.2f'| format(dieta.colesterol())}}</th>
+                            
+                            <th rowspan="1" colspan="1">Deletar </th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Modal -->
+<style>
+    .ui-autocomplete {
+        z-index: 1100 !important;
+    }
+</style>
+<form action="/Dieta/CadastroDieta/{{dieta.id_dieta}}/" onchange="return validaForm(this);" method="GET">
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Adicionar Refeição</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% if msg %}
+                    <div class="alert alert-danger" role="alert">
+                       {{msg}}
+                      </div>
+                    {% endif %}
+                    <div style="width: 450px;" class="form-group ui-widget">
+                        <label>Buscar Refeicao:</label>
+                        <input type="search" class="form-group input-sm" id="busca" aria-controls="example1" name="busca">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %} {% block scripts %}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(function () {
+        var refeicoes = JSON.parse('{{refeicoes|safe}}');
+        $("#busca").autocomplete({
+            source: refeicoes
+        });
+    });
+</script>{% endblock %}

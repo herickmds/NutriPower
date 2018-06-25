@@ -6,7 +6,7 @@ from peewee import mysql ,CharField ,Model, MySQLDatabase,IntegerField
 import peewee as pw
 
 # Connect to a MySQL database on network.
-db = MySQLDatabase('nutripower2', user='root', password='2016hmds',
+db = MySQLDatabase('nutripower', user='root', password='2016hmds',
                          host='localhost', port=3306)
 
 

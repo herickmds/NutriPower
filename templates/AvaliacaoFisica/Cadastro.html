@@ -1,0 +1,52 @@
+{% extends 'NutriPower.html' %} {% block content %}
+
+<div class="box box-primary">
+
+<form role="form" method="POST" action="/AvaliacaoFisica/CadastroAvaliacao/{{paciente.id_paciente}}/" enctype="multipart/form-data">
+    <div class="box-body">
+     <div class="form-group">
+       <div style="width: 150px" class="form-group">
+         <label>Objetivo</label>
+         <input value="{{form.objetivo}}" type="text" class="form-control" name="objetivo">
+       </div>
+
+       <div style="width: 450px;" class="form-group">
+          <label>Observações</label>
+          <input value="{{form.observacoes}}" type="text" class="form-control" name="observacoes">
+        </div>
+
+        <div style="width: 450px;" class="form-group">
+            <label>pressão</label>
+            <input value="{{form.pressao}}" type="text" class="form-control" name="pressao">
+          </div>
+ 
+          <div style="width: 450px;" class="form-group">
+              <label>data</label>
+              <input value="{{form.data}}" type="text" class="form-control" name="data">
+            </div>
+
+            <div style="width: 450px;" class="form-group">
+              <label>Percentual de gordura</label>
+              <input value="{{form.gordura}}" type="text" class="form-control" name="gordura">
+            </div>
+
+            <div style="width: 450px;" class="form-group">
+              <label>Percentual de massa muscular</label>
+              <input value="{{form.massamuscular}}" type="text" class="form-control" name="massamuscular">
+            </div>
+            <div style="width: 450px;" class="form-group">
+              <label>Percentual de massa magra</label>
+              <input value="{{form.massamagra}}" type="text" class="form-control" name="massamagra">
+            </div>
+
+            <div style="width: 450px;" class="form-group">
+              <label>Metabolismo Basal</label>
+              <input value="{{form.metabolismobasal}}" type="text" class="form-control" name="metabolismobasal">
+            </div>
+   
+       <button type="submit" class="btn btn-info">Salvar</button>
+</form>
+
+</div>
+
+{% endblock %}

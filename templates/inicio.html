@@ -1,0 +1,54 @@
+{% extends 'NutriPower.html' %} {% block content %}
+<style>
+    .carousel-inner>.item>img,
+    .carousel-inner>.item>a>img {
+        width: 70%;
+        margin: auto;
+    }
+</style>
+
+<div class="container">
+    <h2>Bem Vindo a plataforma NutriPower</h2>
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+
+        <div class="carousel-inner">
+            {% for i in imagens %}
+            <div class="item{% if loop.index == 1 %} active{% endif %}">
+                <img img src="/static/dist/imagens/{{i}}" class="img-responsive" width="300px" height="500" alt="test1">
+                <div class="carousel-caption"></div>
+            </div>
+            {% endfor %}
+
+        </div>
+
+
+
+        <!-- Controls -->
+        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+
+
+        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        // Enable Carousel Controls
+        $(".left").click(function () {
+            $("#myCarousel").carousel("prev");
+        });
+        $(".right").click(function () {
+            $("#myCarousel").carousel("next");
+        });
+        $("#myCarousel").on('slide.bs.carousel', function () {
+        });
+    });
+</script> {% endblock %}

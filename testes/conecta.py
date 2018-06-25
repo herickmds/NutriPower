@@ -1,12 +1,7 @@
 #!/usr/bin/python
 #encoding: utf-8
-from NutripowerMysql import Alimento , db
-import codecs
+from NutripowerMysql import Alimento ,Estado, Pais, db
 
-
-lista = Alimento.select()
-
-for a in lista:
-    print(u" %s"% a.nome)
-
-
+lista = [ Alimento ,Estado, Pais ]
+db.connect()
+db.create_tables(lista)

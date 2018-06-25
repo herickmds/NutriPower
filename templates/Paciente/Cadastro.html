@@ -1,25 +1,61 @@
  {% extends 'NutriPower.html' %} {% block content %}
 
-
-
 <div class="box box-primary">
 
-  {% if msg_error %}
-  <pre style="color:red">{{ msg_error}}</pre>
-  {% endif %}
+  <script src="/static/validaDados.js"></script>
 
-  <form role="form" method="POST" action="/Paciente/CadastroPaciente/" enctype="multipart/form-data">
+  <form role="form" method="POST" action="/Paciente/CadastroPaciente/" onsubmit="return validaForm(form);" enctype="multipart/form-data">
     <div class="box-body">
       <div class="form-group">
+        {% if msg == 'cad'%}
+        <div style="width: 150px" class="form-group">
+          <label>Foto</label>
+          <input type="file" name="foto">
+        </div>
+        {% endif %}
+
+        <div class="container">
+          {% if msg == 'ok'%}
+          <div class="col-lg-4">
+            <img style="height: 150px;width: 150px;" class="img-circle" src="{{foto}}">
+          </div>
+          {% endif %}
+        </div>
 
         <div style="width: 450px;" class="form-group">
           <label>Nome</label>
-          <input value="{{form.nome}}" type="text" class="form-control" placeholder="Enter ..." name="nome">
+          <input value="{{form.nome}}" type="text" class="form-control" name="nome">
         </div>
 
         <div style="width: 150px" class="form-group">
           <label>Idade</label>
-          <input value="{{form.idade}}" type="text" class="form-control" placeholder="Enter ..."  name="idade">
+          <input value="{{form.idade}}" type="text" class="form-control" name="idade">
+        </div>
+
+        <div style="width: 150px" class="form-group">
+          <label>CEP</label>
+          <input name="cep" type="text" class="form-control" id="cep" value="" size="10" maxlength="9" onblur="pesquisacep(this.value);">
+        </div>
+        <div style="width: 500px" class="form-group">
+          <label>Rua:
+            <input name="rua"  class="form-control" value="{{form.rua}}" type="text" id="rua" size="60" /></label><br />
+            <label>Bairro:
+            <input name="bairro" class="form-control" value="{{form.bairro}}" type="text" id="bairro" size="40" /></label><br />
+            <label>Cidade:
+            <input name="cidade" class="form-control" type="text" id="cidade" size="40" /></label><br />
+            <label>Estado:
+            <input name="uf" class="form-control" value="{{form.uf}}" type="text" id="uf" size="2" /></label><br />
+            <label>IBGE:
+            <input name="ibge" class="form-control" value="{{form.ibge}}" type="text" id="ibge" size="8" /></label><br />
+        </div>
+
+        <div style="width: 150px" class="form-group">
+          <label>Número da casa</label>
+          <input value="{{form.num_casa}}" type="text" class="form-control" name="num_casa">
+        </div>
+        <div style="width: 150px" class="form-group">
+          <label>Complemento</label>
+          <input value="{{form.complemento}}" type="text" class="form-control" name="complemento">
         </div>
 
         <div style="width: 150px;" class="form-group">
@@ -72,16 +108,11 @@
       </div>
     </div>
 
+    {% if msg == 'cad' %}
     <button type="submit" class="btn btn-info pull-right">Salvar</button>
-
+    {% endif %}
   </form>
 </div>
-<button type="submit" class="btn btn-default">
-  <a href="../NutriPower.html" style="color: black">Cancelar</a>
-</button>
-
-
-
 
 
 {% endblock %}

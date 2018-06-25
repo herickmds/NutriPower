@@ -1,21 +1,15 @@
-{% extends 'NutriPower.html' %} {% block content %}
+{% extends 'NutriPower.html' %} {% block content %} {% if msg_error %}
+<pre style="color:red">{{ msg_error}}</pre> {% endif %}
+
 <div class="box">
   <div class="box-header">
-    <h3 class="box-title">Listagem de Alimentos:</h3>
+    <h3 class="box-title">Listagem de Refeições:</h3>
   </div>
   <div class="box-body">
     <div id="alimentos_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
       <div class="row">
         <div class="col-sm-6">
           <div class="dataTables_length" id="alimentos_length">
-            <label>Mostraranto 10 Alimentos</label>
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div id="alimentos_filter" class="dataTables_filter">
-            <label>Buscar:
-              <input type="search" class="form-control input-sm" placeholder="" aria-controls="alimentos">
-            </label>
           </div>
         </div>
       </div>
@@ -24,40 +18,47 @@
           <table id="alimentos" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="alimentos_info">
             <thead>
               <tr role="row">
-                <th class="sorting_asc" tabindex="0" aria-controls="alimentos" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending"
-                  style="width: 100px;">Nome</th>
-                <th class="sorting" tabindex="0" aria-controls="alimentos" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending"
-                  style="width: 100px;">Horário</th>
-                <th class="sorting" tabindex="0" aria-controls="alimentos" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending"
-                  style="width: 100px;">Carboidratos</th>
-                <th class="sorting" tabindex="0" aria-controls="alimentos" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending"
-                  style="width: 100px;">Proteínas</th>
-                <th class="sorting" tabindex="0" aria-controls="alimentos" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending"
-                  style="width: 100px;">Gorduras</th>
-                <th class="sorting" tabindex="0" aria-controls="alimentos" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending"
-                  style="width: 100px;">Calorias</th>
+                  <th class="sorting_asc" tabindex="0" rowspan="1" colspan="1" aria-sort="ascending" style="width: 100px;">Alterar</th>
+                <th class="sorting_asc" tabindex="0" rowspan="1" colspan="1" aria-sort="ascending" style="width: 100px;">Nome Refeição</th>
+                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Horário</th>
+                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Proteínas(g)</th>
+                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Carboidratos(g)</th>
+                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Gorduras(g)</th>
+                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Colesterol(mg)</th>
+                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Calorias(Kcal)</th>
+                <th class="sorting_asc" tabindex="0" rowspan="1" colspan="1" aria-sort="ascending" style="width: 100px;">Deletar</th>
               </tr>
             </thead>
             <tbody id="corpoTabela">
               {% for r in lista %}
-              <tr role="row" class="odd" id="linha">
-                <td class="sorting_1">{{p.nome_refeicao}}</td>
-                <td>{{r.horario_refeicao}}</td>
-                <td>{{r.carboidratos}}</td>
-                <td>{{r.proteinas}}</td>
-                <td>{{r.gorduras}}</td>
-                <td>{{r.calorias}}</td>
+              <tr role="row" class="odd" name="linha">
+                  <td class="sorting_1">
+                      <a href="/Refeicao/ExibirRefeicaoAlterar/{{r.id_refeicao}}/" class="btn btn-info" role="button">Alterar</a>
+                  </td>
+                <td class="sorting_1" name="nomeAlimento">{{r.nome_refeicao}}</td>
+                <td class="sorting_1" name="nomeAlimento">{{r.horario_refeicao}}</td>
+                <td name="proteina">{{'%0.2f'| format(r.proteina()|float)}}</td>
+                <td name="gordura">{{'%0.2f'| format(r.gordura()|float)}}</td>
+                <td name="carboidrato">{{'%0.2f'| format(r.carboidrato()|float)}}</td>
+                <td name="caloria">{{'%0.2f'| format(r.caloria()|float)}}</td>
+                <td name="colesterol">{{'%0.2f'| format(r.colesterol()|float)}}</td>
+                <td class="sorting_1">
+                    <a href="/Refeicao/RemoverRefeicao/{{r.id_refeicao}}/" class="btn btn-danger" role="button">Deletar</a>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
             <tfoot>
               <tr>
-                <th rowspan="1" colspan="1">Nome</th>
+                <th rowspan="1" colspan="1">Alterar </th>
+                <th rowspan="1" colspan="1">Nome Refeição</th>
                 <th rowspan="1" colspan="1">Horário</th>
-                <th rowspan="1" colspan="1">Carboidratos</th>
-                <th rowspan="1" colspan="1">Proteínas</th>
-                <th rowspan="1" colspan="1">Gorduras</th>
-                <th rowspan="1" colspan="1">Calorias</th>
+                <th rowspan="1" colspan="1">Proteínas(g)</th>
+                <th rowspan="1" colspan="1">Carboidratos(g)</th>
+                <th rowspan="1" colspan="1">Gorduras(g)</th>
+                <th rowspan="1" colspan="1">Colesterol(mg)</th>
+                <th rowspan="1" colspan="1">Calorias(Kcal)</th>
+                <th rowspan="1" colspan="1">Deletar </th>
               </tr>
             </tfoot>
           </table>
@@ -70,23 +71,28 @@
         <div class="col-sm-7">
           <div class="dataTables_paginate paging_simple_numbers" id="paginacao">
             <ul class="pagination">
-              <li class="paginate_button previous" id="alimentos_previous">
-                <a href="#" aria-controls="alimentos" data-dt-idx="0" tabindex="0">Anterior</a>
+              {% if page > 1 %}
+              <li class="paginate_button previous">
+                <a href="./?page={{ page - 1 }}" aria-controls="alimentos" data-dt-idx="0" tabindex="0">Anterior</a>
               </li>
-              <li class="paginate_button active">
-                <a aria-controls="alimentos" data-dt-idx="1" tabindex="0">1</a>
-              </li>
-              <li class="paginate_button active">
-                <a aria-controls="alimentos" data-dt-idx="1" tabindex="0">2</a>
-              </li>
-              <li class="paginate_button active">
-                <a aria-controls="alimentos" data-dt-idx="1" tabindex="0">3</a>
-              </li>
-            
-              <li class="paginate_button next" id="paginacao">
-                <a aria-controls="alimentos" data-dt-idx="0" tabindex="0">Próxima</a>
-              </li>
-              
+              {% endif %} 
+              {% for p in range(1,paginacoes+1) %}
+               {%if p < 10 %} <li class="paginate_button">
+                <a href="./?page={{p}}" a data-dt-idx="1" tabindex="0">{{p}}</a>
+                </li>
+                {% endif %} 
+              {% endfor %} 
+            {%if page >= 10 %}
+                <li class="paginate_button">
+                  <a href="" a data-dt-idx="1" tabindex="0">...</a>
+                </li>
+                <li class="paginate_button">
+                  <a href="./?page={{page}}" a data-dt-idx="1" tabindex="0">{{page}}</a>
+                </li>
+            {% endif %} {% if page < paginacoes %} <li class="paginate_button next" id="paginacao">
+                  <a href="./?page={{ page + 1 }}" data-dt-idx="0" tabindex="0">Próxima</a>
+                  </li>
+                  {% endif %}
             </ul>
           </div>
         </div>

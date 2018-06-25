@@ -42,11 +42,11 @@
               {% for a in lista %}
               <tr role="row" class="odd" id="linha">
                 <td class="sorting_1" id="nomeAlimento">{{a.nome}}</td>
-                <td id="proteina">{{a.proteina}}</td>
-                <td id="gordura">{{a.lipidio}}</td>
-                <td id="carboidrato">{{a.carboidrato}}</td>
-                <td id="caloria">{{a.Kcal}}</td>
-                <td id="colesterol">{{a.colesterol}}</td>
+                <td id="proteina">{{'%0.2f'| format(a.proteina|float)}}</td>
+                <td id="gordura">{{'%0.2f'| format(a.lipidio|float)}}</td>
+                <td id="carboidrato">{{'%0.2f'| format(a.carboidrato|float)}}</td>
+                <td id="caloria">{{'%0.2f'| format(a.Kcal|float)}}</td>
+                <td id="colesterol">{{'%0.2f'| format(a.colesterol|float)}}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -70,23 +70,31 @@
         <div class="col-sm-7">
           <div class="dataTables_paginate paging_simple_numbers" id="paginacao">
             <ul class="pagination">
-              <li class="paginate_button previous" id="alimentos_previous">
-                <a href="#" aria-controls="alimentos" data-dt-idx="0" tabindex="0">Anterior</a>
-              </li>
-              <li class="paginate_button active">
-                <a aria-controls="alimentos" data-dt-idx="1" tabindex="0">1</a>
-              </li>
-              <li class="paginate_button active">
-                <a aria-controls="alimentos" data-dt-idx="1" tabindex="0">2</a>
-              </li>
-              <li class="paginate_button active">
-                <a aria-controls="alimentos" data-dt-idx="1" tabindex="0">3</a>
-              </li>
-            
-              <li class="paginate_button next" id="paginacao">
-                <a aria-controls="alimentos" data-dt-idx="0" tabindex="0">Próxima</a>
-              </li>
-              
+                {% if page > 1 %}
+                <li class="paginate_button previous">
+                  <a href="./?page={{ page - 1 }}" aria-controls="alimentos" data-dt-idx="0" tabindex="0">Anterior</a>
+                </li>
+                {% endif %}
+                {% for p in range(1,paginacoes+1) %}
+                {%if p < 10 %}
+                <li class="paginate_button">
+                  <a href="./?page={{p}}" a data-dt-idx="1" tabindex="0">{{p}}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+                {%if page >= 10 %}
+                <li class="paginate_button">
+                    <a href="" a data-dt-idx="1" tabindex="0">...</a>
+                  </li>
+                <li class="paginate_button">
+                  <a href="./?page={{page}}" a data-dt-idx="1" tabindex="0">{{page}}</a>
+                </li>
+                {% endif %}
+                {% if page < paginacoes %}
+                <li class="paginate_button next" id="paginacao">
+                  <a href="./?page={{ page + 1 }}" data-dt-idx="0" tabindex="0">Próxima</a>
+                </li>
+                {% endif %}
             </ul>
           </div>
         </div>

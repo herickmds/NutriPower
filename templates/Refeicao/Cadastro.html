@@ -1,20 +1,32 @@
  {% extends 'NutriPower.html' %} {% block content %}
-
-
- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
- <script>
-   function onchangeBusca(busca) {
-     var nome = busca.value;
-     window.location.href = "/Refeicao/BuscarAlimentoRefeicao/?nome=" + nome;
-     alert(nome)
-   }
- </script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 <div class="box box-primary">
 
-  <form role="form" method="POST" action="/Refeicao/CadastroRefeicao/" enctype="multipart/form-data">
+  <script>
+    function onchangeBusca(busca) {
+      var nome = busca.value;
+      window.location.href = "/Refeicao/BuscarAlimentoRefeicao/?nome=" + nome;
+    }
+  </script>
+ <script>
+    function onchangeInserir(busca) {
+      window.location.href = "/Refeicao/CadastroRefeicao/" + busca;
+    }
+  </script>
+
+  <script src="/static/validaDados.js"></script>
+
+
+
+
+  <div class="box-body">
+      <div class="form-group">
+
+  <form role="form" method="POST" action="/Refeicao/CadastroRefeicao/" onsubmit="return validaForm(this);" enctype="multipart/form-data">
     <div class="box-body">
       <div class="form-group">
+
 
         <div style="width: 450px;" class="form-group">
           <label>Nome Refeição</label>
@@ -22,74 +34,28 @@
         </div>
 
         <div style="width: 150px" class="form-group">
-          <label>Horario</label>
+          <label>Horário</label>
           <input value="{{form.horario}}" type="text" class="form-control" name="horario">
         </div>
-
-
-        <div style="width: 150px" class="form-group">
-          <label>Alimentos</label>
-          
-          <form action="/Refeicao/BuscarAlimentoRefeicao" method="GET">
-            <div style="width: 450px;" class="form-group ui-widget">
-              <label>Buscar Alimento:</label>
-              <input type="search" class="form-group input-sm" id="busca" aria-controls="example1" name="busca" onchange="onchangeBusca(this)">
-            </div>
-          </form>
-          {% if refeicao %}
-          {% for r in lista %}
-          <input value="{{form.nome_alimento}}" type="text" class="form-control" name="nome_alimento">
-          {{% r.nome_refeicao %}}
-          {% endfor %}
-        </div>
-
-        <div style="width: 150px;" class="form-group">
-          <label>Calorias</label>
-          <input name="calorias" value="{{form.calorias}}" class="form-control">{{refeicao.calorias}}
-        </div>
-
-        <div style="width: 450px;" class="form-group">
-          <label>Proteinas</label>
-          <input name="proteina" value="{{form.proteina}}" class="form-control">{{refeicao.proteinas}}
-        </div>
       </div>
 
-      <div style="width: 450px;" class="form-group">
-        <label>Carboidratos</label>
-        <input name="carboidrato" value="{{form.carboidrato}}" class="form-control">{{refeicao.carboidratos}}
-      </div>
-
-      <div style="width: 450px;" class="form-group">
-        <label>Gorduras</label>
-        <input name="gordura" value="{{form.gordura}}" class="form-control">{{refeicao.gorduras}}
-      </div>
-    </div>
+    {% if msg == 'cad' %}
+    <button type="submit" class="btn btn-info pull-right">Salvar</button>
     {% endif %}
+  </form> 
+  
 </div>
 
-<button type="submit" class="btn btn-info pull-right">Salvar</button>
-
-</form>
 </div>
-<button type="submit" class="btn btn-default">
-  <a href="../NutriPower.html" style="color: black">Cancelar</a>
-</button>
 
 
-
-
-
-{% endblock %}
-
-
-{% block scripts %}
+{% endblock %} {% block scripts %}
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
-  $( function() {
+  $(function () {
     var alimentos = JSON.parse('{{alimentos|safe}}');
-    $( "#busca" ).autocomplete({
+    $("#busca").autocomplete({
       source: alimentos
     });
-  } );
-  </script>
-{% endblock %}
+  });
+</script> {% endblock %}

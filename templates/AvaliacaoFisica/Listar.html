@@ -3,7 +3,7 @@
 
 <div class="box">
   <div class="box-header">
-    <h3 class="box-title">Listagem de Refeições:</h3>
+    <h3 class="box-title">Listagem de Avaliações Físicas:</h3>
   </div>
   <div class="box-body">
     <div id="alimentos_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
@@ -18,47 +18,43 @@
           <table id="alimentos" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="alimentos_info">
             <thead>
               <tr role="row">
-                  <th class="sorting_asc" tabindex="0" rowspan="1" colspan="1" aria-sort="ascending" style="width: 100px;">Alterar</th>
-                <th class="sorting_asc" tabindex="0" rowspan="1" colspan="1" aria-sort="ascending" style="width: 100px;">Nome Refeição</th>
-                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Horário</th>
-                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Proteínas(g)</th>
-                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Carboidratos(g)</th>
-                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Gorduras(g)</th>
-                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Colesterol(mg)</th>
-                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Calorias(Kcal)</th>
+                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Gerar Consulta</th>
+                <th class="sorting_asc" tabindex="0" rowspan="1" colspan="1" aria-sort="ascending" style="width: 100px;">Nome Paciente</th>
+                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Objetivo</th>
+                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">IMC</th>
+                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Peso</th>
+                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Percentual de Gordura</th>
+                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 100px;">Percentual de Massa Magra</th>
                 <th class="sorting_asc" tabindex="0" rowspan="1" colspan="1" aria-sort="ascending" style="width: 100px;">Deletar</th>
               </tr>
             </thead>
             <tbody id="corpoTabela">
-              {% for d in lista %}
+              {% for a in lista %}
               <tr role="row" class="odd" name="linha">
-                  <td class="sorting_1">
-                      <a href="/Dieta/ExibirDietaAlterar/{{d.id_dieta}}/" class="btn btn-info" role="button">Alterar</a>
-                  </td>
-                <td class="sorting_1" name="nomeAlimento">{{d.nome_dieta}}</td>
-                <td class="sorting_1" name="nomeAlimento">{{d.objetivo}}</td>
-                <td name="proteina">{{'%0.2f'| format(d.proteina()|float)}}</td>
-                <td name="gordura">{{'%0.2f'| format(d.gordura()|float)}}</td>
-                <td name="carboidrato">{{'%0.2f'| format(d.carboidrato()|float)}}</td>
-                <td name="caloria">{{'%0.2f'| format(d.caloria()|float)}}</td>
-                <td name="colesterol">{{'%0.2f'| format(d.colesterol()|float)}}</td>
+                <td> <a href="/Consulta/CadastroConsulta/{{a.id_avaliacao}}/" class="btn btn-info" role="button">Gerar Consulta</a></td>
+                <td class="sorting_1">{{a.id_paciente.nome}}</td>
+                <td class="sorting_1">{{a.objetivo}}</td>
+                <td>{{'%0.2f'| format(a.imc|float)}}</td>
+                <td>{{a.id_paciente.peso}}</td>
+                <td>{{a.porcentagem_gordura}}</td>
+                <td>{{a.porcentagem_massa_magra}}</td>
                 <td class="sorting_1">
-                    <a href="/Dieta/RemoverDieta/{{d.id_dieta}}/" class="btn btn-danger" role="button">Deletar</a>
+                    <a href="/AvaliacaoFisica/Remover/{{a.id_avaliacao}}/" class="btn btn-danger" role="button">Deletar</a>
                 </td>
-            
+          
+
               </tr>
               {% endfor %}
             </tbody>
             <tfoot>
               <tr>
-                <th rowspan="1" colspan="1">Alterar </th>
-                <th rowspan="1" colspan="1">Nome Refeição</th>
-                <th rowspan="1" colspan="1">Horário</th>
-                <th rowspan="1" colspan="1">Proteínas(g)</th>
-                <th rowspan="1" colspan="1">Carboidratos(g)</th>
-                <th rowspan="1" colspan="1">Gorduras(g)</th>
-                <th rowspan="1" colspan="1">Colesterol(mg)</th>
-                <th rowspan="1" colspan="1">Calorias(Kcal)</th>
+                <th rowspan="1" colspan="1">Gerar Consulta</th>
+                <th rowspan="1" colspan="1">Nome Paciente</th>
+                <th rowspan="1" colspan="1">Objetivo</th>
+                <th rowspan="1" colspan="1">IMC</th>
+                <th rowspan="1" colspan="1">Peso</th>
+                <th rowspan="1" colspan="1">Percentual de Gordura</th>
+                <th rowspan="1" colspan="1">Percentual de Massa Magra</th>
                 <th rowspan="1" colspan="1">Deletar </th>
               </tr>
             </tfoot>
